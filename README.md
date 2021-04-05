@@ -27,7 +27,7 @@ to test routing logic with go and gin. this should return `{"message": "test suc
 
 ## how to get started locally
 
-_note:_ the following was tested on `Linux 5.10.0-1008-oem #9-Ubuntu SMP Tue Dec 15 14:22:38 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux`
+_note:_ the following was tested on `Linux 5.10.0-1008-oem #9-Ubuntu SMP Tue Dec 15 14:22:38 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux`.
 
 this repo was designed to have the containers deployed across a cluster of nodes. the container orchestration tool of choice is kubernetes, with the cri-o container runtime. so, to test this locally, we used [minikube](https://minikube.sigs.k8s.io/docs/), which leverages [docker](https://www.docker.com/), to create an environment that simulates a cluster on a single machine.
 
@@ -76,5 +76,23 @@ with the above address, you can access the web server at 192.168.49.2
 
 ## how to deploy on a cluster
 
-\<to do\>
+_note_: the following process has yet to be tested.
+
+to deploy the latest, the most recent changes need to be built locally as a docker image with the following command:
+
+```bash
+$ docker build -t nariddh/go-gin/api:0.1
+```
+
+the image should now exist locally. for the kubernetes spec file to access it, the image(s) need to be pushed to [dockerhub](https://hub.docker.com/), using the following command:
+
+```bash
+$ docker psuh nariddh/go-gin-api:0.1
+```
+
+at this stage, terminal into the master node on your kubernetes cluster, pull the api-deployment.yml file, and apply the changes using:
+
+```bash
+$ kubectl apply -f api-deployment.yml
+```
 
