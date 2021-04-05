@@ -31,68 +31,33 @@ _note:_ the following was tested on `Linux 5.10.0-1008-oem #9-Ubuntu SMP Tue Dec
 
 this repo was designed to have the containers deployed across a cluster of nodes. the container orchestration tool of choice is kubernetes, with the cri-o container runtime. so, to test this locally, we used [minikube](https://minikube.sigs.k8s.io/docs/), which leverages [docker](https://www.docker.com/), to create an environment that simulates a cluster on a single machine.
 
-after following the instructions to install kubernetes, cri-o, docker, and minikube, start minikube with the following command:
+after following the instructions to install kubernetes, cri-o, docker, and minikube, start a small 2 node minikube cluster with the following command:
 
 ```bash
-$ minikube start --container-runtime cri-o
+$ minikube start --container-runtime crio-o --cri-socket /var/run/crio/crio.sock -n 2
 ```
 
-to access the web server inside minikube, we used the nginx ingress controller, which can be enabled in minikube with the following command:
+to access the web server inside minikube, we used the nginx ingress controller, which can be enabled in minikube with the following command (this process will vary based on the provider):
 
 ```bash
 $ minikube addons enable ingress
 ```
 
-to create the components of the web app, use the following command:
+to create the components of the web app, the images need to be built and pushed to [dockerhub](https://hub.docker.com/). only then can the kubernetes specification be used to deploy the image across the cluster. do so using the following commands:
 
 ```bash
+$ docker build -t nariddh/go-gin-api:0.1 .
+$ docker push nariddh/go-gin-api:0.1
 $ kubectl apply -f api-deployment.yml
 ```
 
 at this stage, the web server should be running inside minikube behind the nginx ingress. with the following command, interogate the nginx ingress to find the IP where the web server can be reached locally.
 
 ```bash
-$ kubectl describe ingress
-Name:             nginx-ingress
-Namespace:        default
-Address:          192.168.49.2
-Default backend:  default-http-backend:80 (<error: endpoints "default-http-backend" not found>)
-Rules:
-  Host        Path  Backends
-  ----        ----  --------
-  *
-              /   api-cluster-ip-service:5000 (10.244.0.3:5000,10.244.0.4:5000)
-Annotations:  kubernetes.io/ingress.class: nginx
-              nginx.ingress.kubernetes.io/rewrite-target: /
-Events:
-  Type    Reason  Age    From                      Message
-  ----    ------  ----   ----                      -------
-  Normal  CREATE  6m45s  nginx-ingress-controller  Ingress default/nginx-ingress
-  Normal  UPDATE  6m44s  nginx-ingress-controller  Ingress default/nginx-ingress
+$ kubectl get ingress
+NAME            CLASS    HOSTS   ADDRESS        PORTS   AGE
+nginx-ingress   <none>   *       192.168.49.3   80
 ```
 
-with the above address, you can access the web server at 192.168.49.2
-
-
-## how to deploy on a cluster
-
-_note_: the following process has yet to be tested.
-
-to deploy the latest, the most recent changes need to be built locally as a docker image with the following command:
-
-```bash
-$ docker build -t nariddh/go-gin/api:0.1
-```
-
-the image should now exist locally. for the kubernetes spec file to access it, the image(s) need to be pushed to [dockerhub](https://hub.docker.com/), using the following command:
-
-```bash
-$ docker psuh nariddh/go-gin-api:0.1
-```
-
-at this stage, terminal into the master node on your kubernetes cluster, pull the api-deployment.yml file, and apply the changes using:
-
-```bash
-$ kubectl apply -f api-deployment.yml
-```
+with the above address, you can access the web server at 192.168.49.3
 
