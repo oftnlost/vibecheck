@@ -13,16 +13,42 @@ a full-stack project using the following technologies:
 | backend logic | [golang](https://golang.org/) |
 | web routing   | [gin](https://github.com/gin-gonic/gin) |
 | frontend      | \<to do\> |
-| external apis | \<to do\> |
+| external apis | [vader-go](https://github.com/grassmudhorses/vader-go) |
 
 _note:_ we intentially picked tools that we haven't used before to make this project as much of a learning experience as possible.
 
 
 ## available routes
 
-`/api/test` : `(get)`
+### `/api/ping`
+`[get]`: for testing routing logic with go and gin.
 
-to test routing logic with go and gin. this should return `{"message": "test successful"}`.
+```json
+{
+    "ping": "pong"
+}
+```
+
+### `/api/sentiment`
+
+`[post]`: for testing the sentiment analysis model. a post request containing a multi-part form will return the results of the sentiment analysis.
+
+```json
+{
+    "input": "i am happy"
+}
+```
+
+```json
+{
+    "input": "i am happy",
+    "output": {
+        "positive": 0.6491228070175439,
+        "neural": 0.350877192824561,
+        "negative": 0
+    }
+}
+```
 
 
 ## how to get started locally

@@ -1,21 +1,44 @@
 package main
 
 import (
+    // web framework
     "github.com/gin-gonic/gin"
+
+    // pretrained sentiment analysis models
+    "github.com/grassmudhorses/vader-go/lexicon"
+    "github.com/grassmudhorses/vader-go/sentitext"
 )
 
-var Router *gin.Engine
+func ping(c *gin.Context) {
+    c.JSON(200, gin.H{"ping": "pong"})
+}
+
+func postSentiment(c *gin.Context) {
+    inputString := c.PostForm("input")
+    parsedInputString := sentitext.Parse(inputString, lexicon.DefaultLexicon)
+    sentiment := sentitext.PolarityScore(parsedInputString)
+
+    returnJson := gin.H{
+        "input": inputString,
+        "output": gin.H{
+            "positive": sentiment.Positive,
+            "negative": sentiment.Negative,
+            "neural": sentiment.Neutral,
+        },
+    }
+
+    c.JSON(200, returnJson)
+}
 
 func main() {
-    Router = gin.Default()
-    api := Router.Group("/api")
+    router := gin.Default()
+
+    api := router.Group("/api")
     {
-        api.GET("/test", func(ctx *gin.Context) {
-            ctx.JSON(200, gin.H{
-                "message": "test successful",
-            })
-        })
+        api.GET("/ping", ping)
+        api.POST("/sentiment", postSentiment)
     }
-    Router.Run(":5000")
+
+    router.Run(":5000")
 }
 
