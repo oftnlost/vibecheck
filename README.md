@@ -25,11 +25,32 @@ _note:_ we intentially picked tools that we haven't used before to make this pro
 to test routing logic with go and gin. this should return `{"message": "test successful"}`.
 
 
-## how to get started locally
+## how to get started locally with docker
+
+although this project was developed to run on a cluster of nodes using tools like kubernetes and the cri-o container runtime, you can get started by running a single container locally with [docker](https://www.docker.com/). follow the instructions [here](https://docs.docker.com/get-docker/) to install docker for your machine.
+
+to spin up the api server locally, use the following commands to build and run the container:
+
+```bash
+docker build -t go-gin-api .
+docker run --name go-gin-api-container -p 80:5000 go-gin-api
+```
+
+the api server can be reached on localhost throught the standard http port 80 (see the _available routes_ section for more details). the terminal used to spin up the container will show you live request logs. after the container is stopped, if there are no changes to the api server's source code, you can start the container again with the latter of the two above commands.
+
+to stop the server and remove the container, use the following commands:
+
+```bash
+docker stop go-gin-api-container
+docker rm go-gin-api-container
+```
+
+
+## how to get started locally with minikube
 
 _note:_ the following was tested on `Linux 5.10.0-1008-oem #9-Ubuntu SMP Tue Dec 15 14:22:38 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux`.
 
-this repo was designed to have the containers deployed across a cluster of nodes. the container orchestration tool of choice is kubernetes, with the cri-o container runtime. so, to test this locally, we used [minikube](https://minikube.sigs.k8s.io/docs/), which leverages [docker](https://www.docker.com/), to create an environment that simulates a cluster on a single machine.
+this repo was designed to have the containers deployed across a cluster of nodes. the container orchestration tool of choice is kubernetes, with the cri-o container runtime. so, to test how this applciation scales locally, we used [minikube](https://minikube.sigs.k8s.io/docs/), which leverages [docker](https://www.docker.com/), to create an environment that simulates a cluster on a single machine.
 
 after following the instructions to install kubernetes, cri-o, docker, and minikube, start a small 2 node minikube cluster with the following command:
 
