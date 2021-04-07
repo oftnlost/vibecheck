@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: go-gin-api
-        image: nariddh/go-gin-api:0.1
+        image: nariddh/go-gin-api:0.2
         ports:
           - containerPort: 5000
 

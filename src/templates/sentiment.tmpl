@@ -1,0 +1,41 @@
+<html>
+
+    <head>
+
+        <title>vibecheck</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $("#sentiment").submit(function(event) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/sentiment",
+                        data: $("#sentiment").serialize(),
+                        success: function(data) {
+                            $("#output").html(JSON.stringify(data));
+                        }
+                    });
+                    event.preventDefault();
+                });
+            });
+        </script>
+
+    </head>
+
+    <body>
+
+        <h1>vibecheck</h1>
+
+        <form id="sentiment">
+            <input type="text" name="input">
+            <input type="submit" value="check vibes">
+        </form>
+
+        <div id="output"></div>
+
+    </body>
+
+</html>
+
