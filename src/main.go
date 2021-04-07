@@ -1,7 +1,7 @@
 package main
 
 import (
-    // web framework
+    // web
     "github.com/gin-gonic/gin"
 
     // pretrained sentiment analysis models
@@ -9,8 +9,8 @@ import (
     "github.com/grassmudhorses/vader-go/sentitext"
 )
 
-func ping(c *gin.Context) {
-    c.JSON(200, gin.H{"ping": "pong"})
+func getSentiment(c *gin.Context) {
+    c.HTML(200, "sentiment.tmpl", "")
 }
 
 func postSentiment(c *gin.Context) {
@@ -32,10 +32,11 @@ func postSentiment(c *gin.Context) {
 
 func main() {
     router := gin.Default()
+    router.LoadHTMLGlob("templates/*")
 
     api := router.Group("/api")
     {
-        api.GET("/ping", ping)
+        api.GET("/sentiment", getSentiment)
         api.POST("/sentiment", postSentiment)
     }
 
