@@ -20,18 +20,9 @@ _note:_ we intentially picked tools that we haven't used before to make this pro
 
 ## available routes
 
-### `/api/ping`
-`[get]`: for testing routing logic with go and gin.
-
-```json
-{
-    "ping": "pong"
-}
-```
-
 ### `/api/sentiment`
 
-`[post]`: for testing the sentiment analysis model. a post request containing a multi-part form will return the results of the sentiment analysis.
+`[get|post]`: for testing the sentiment analysis model. the get request returns a html form to send a post reques, which returns the results of the sentiment analysis.
 
 ```json
 {
